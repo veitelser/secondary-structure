@@ -1,0 +1,23 @@
+Subtractive Learning Classifier (9/20/16)
+
+
+compile:
+gcc -O2 subtract.c data.c -lm -o subtract
+
+
+run:
+./subtract datafile startsize support datasize trainbatch testbatch id &
+
+datafile: file of training data (see mnist64)
+startsize: starting number of clauses per class
+support: number of variables per clause
+datasize: number of training data to use
+trainbatch: batch size for training (not used for testing)
+testbatch: batch size for testing (also used for training after testing)
+id: identifier used on output files
+
+
+output:
+id.log: prediction accuracy and log_10 of number of clauses in each class
+id.conf: confusion matrix for formula that tested with the highest prediction accuracy
+id.form: formula that tested with the highest prediction accuracy
