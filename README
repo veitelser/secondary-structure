@@ -1,3 +1,5 @@
+***************************************************************************************
+
 Subtractive Learning Classifier (9/20/16)
 
 
@@ -20,4 +22,16 @@ id: identifier used on output files
 output:
 id.log: prediction accuracy and log_10 of number of clauses in each class
 id.conf: confusion matrix for formula that tested with the highest prediction accuracy
-id.form: formula that tested with the highest prediction accuracy
+id.form: formula that tested with the highest prediction accuracy (in binary format)
+
+***************************************************************************************
+
+Classifier Demo (9/27/16)
+
+
+compile:
+gcc -O2 predict.c -o predict
+
+
+run:
+./predict id.form
