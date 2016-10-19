@@ -2,3 +2,15 @@
 via exp(-H) tag-vote results in 96.874% accuracy.
 
 6764 tags of length 25: same method gives 97.4855%.
+
+Using "split" method for first set of 3634 tags gives 88.5693%
+
+===========
+Let's experiment with tag length.
+Hypothesis: shorter tags -> easier to keep the same sequence.
+
+Using 3475 tags of length 20
+Vote -> 98.0595%
+
+Using 3480 tags of lenth 30
+Vote -> 95.2518%

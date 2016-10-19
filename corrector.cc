@@ -1,6 +1,7 @@
 // Functions to work with local classifier output, and correct it based on
-// tags sampled from the PDB. Format is [exe] [input ss file] [tags] [# to correct] [output ss file],
+// tags sampled from the PDB. Format is [exe] [input ss file] [tags] [# to correct] [mode] [output ss file],
 // all three files uncompressed and \n-delimited
+// [mode] is either vote or split
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -51,18 +52,49 @@ string vote_corrector(string & seq, vector<string> & tags) {
   return res;
 }
 
+// split the sequence into chunks as long as the tags, then for each
+// chunk replace it with the tag that has the smallest Hamming distance to it
+string split_corrector(string & seq, vector<string> & tags) {
+  string res = seq;
+  int k = tags[0].size();
+  int n = seq.size();
+  int numchunks = n / k;
+  for (int j = 0; j < numchunks; ++j) {
+    // find the tag with minimum hamming distance away from this chunk
+    int best_t = 0; int Ham = Hamming(seq, tags[0], j*k); int Ham2;
+    for (int t = 1; t < tags.size(); ++t) {
+      Ham2 = Hamming(seq, tags[t], j*k);
+      if (Ham2 < Ham) {best_t = t; Ham = Ham2;}
+    }
+    // now we know the best tag for this chunk. Replace the chars in the chunk with those of the tag.
+    for (int i = 0; i < k; ++i) res[j*k + i] = tags[best_t][i];
+  }
+  return res;
+}
+
 int main(int argc, char ** argv) {
-  if (argc != 5) {cout<<"Wrong command format.\n"; return 0;}
+  if (argc != 6) {cout<<"Wrong command format.\n"; return 0;}
   ifstream seqin (argv[1]);
   ifstream tagsin (argv[2]);
   int n_to_correct = atoi(argv[3]);
-  ofstream seqout (argv[4]);
+  string mode (argv[4]);
+  ofstream seqout (argv[5]);
 
   vector<string> tags; string line;
   while(getline(tagsin, line)) tags.push_back(line);
+
+  int twentieths_done = 0;
+  cout << "[                    ] Progress";
+
   for (int k = 0; getline(seqin, line) && k < n_to_correct; ++k) {
     if (k > 0) seqout << '\n';
-    seqout << vote_corrector(line, tags);
+    if (mode=="vote") {seqout << vote_corrector(line, tags); }
+    else{ seqout << split_corrector(line, tags); }
+
+    twentieths_done = 20 * k / n_to_correct;
+    cout << "\r["; for (int a = 0; a < 20; ++a) {if (a <= twentieths_done) cout << (unsigned char)0xb1; else cout << ' ';}
+    cout << "] Progress";
   }
+  cout<<"\n";
   return 0;
 }
