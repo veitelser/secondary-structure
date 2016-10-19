@@ -1,0 +1,4 @@
+3634 tags of length 25: trying to correct the training sequences themselves
+via exp(-H) tag-vote results in 96.874% accuracy.
+
+6764 tags of length 25: same method gives 97.4855%.
