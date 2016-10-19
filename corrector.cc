@@ -1,11 +1,12 @@
 // Functions to work with local classifier output, and correct it based on
-// tags sampled from the PDB. Format is [exe] [input ss file] [tags] [output ss file],
+// tags sampled from the PDB. Format is [exe] [input ss file] [tags] [# to correct] [output ss file],
 // all three files uncompressed and \n-delimited
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <cmath>
+#include <cstdlib>
 using namespace std;
 
 int Hamming(string & seq, string & tag, int offset) {
@@ -51,14 +52,15 @@ string vote_corrector(string & seq, vector<string> & tags) {
 }
 
 int main(int argc, char ** argv) {
-  if (argc != 4) {cout<<"Wrong command format.\n"; return 0;}
+  if (argc != 5) {cout<<"Wrong command format.\n"; return 0;}
   ifstream seqin (argv[1]);
   ifstream tagsin (argv[2]);
-  ofstream seqout (argv[3]);
+  int n_to_correct = atoi(argv[3]);
+  ofstream seqout (argv[4]);
 
   vector<string> tags; string line;
   while(getline(tagsin, line)) tags.push_back(line);
-  for (int k = 0; getline(seqin, line) && k < 100; ++k) {
+  for (int k = 0; getline(seqin, line) && k < n_to_correct; ++k) {
     if (k > 0) seqout << '\n';
     seqout << vote_corrector(line, tags);
   }
