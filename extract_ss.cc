@@ -4,16 +4,20 @@
 
 char structure(char s) {
   switch(s) {
-    case 'H': return 0;
-    case 'E': return 1;
-    case 'T': return 2;
-    default: return 3;
+    case 'E': return '0';
+    case 'B': return '0';
+    case 'I': return '1';
+    case 'G': return '1';
+    case 'H': return '1';
+    case 'S': return '2';
+    case 'T': return '2';
+    default: return '3';
   }
 }
 
 int main(int argc, char ** argv) {
   std::ifstream seqin (argv[1]);
-  std::ofstream seqout (argv[2], std::ios::binary);
+  std::ofstream seqout (argv[2]);//, std::ios::binary);
   if (seqin.is_open() && seqout.is_open()) {
     std::cout << "Opened files.\n";
   }
